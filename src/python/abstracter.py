@@ -26,7 +26,7 @@ def main():
     """
     Test the abstract_code function on a sample file.
     """
-    filepath = "src/test/example2.py"
+    filepath = "src/test/example3.py"
     tree = abstract_code(filepath)
     print(ast.dump(tree, indent=4))
 

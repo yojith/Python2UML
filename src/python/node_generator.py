@@ -1,13 +1,12 @@
 """
-Generate a UML diagram from an abstract syntax tree (AST) of Python code.
+This file creates nodes for a UML diagram from a python AST.
 """
 
 import ast
 from graphviz import Digraph
-from abstracter import abstract_code
 
 
-def create_nodes(ast_tree: ast.AST, dot: Digraph) -> None:
+def create_nodes(ast_tree: ast.AST, dot: Digraph) -> set[str]:
     """
     Create nodes in the UML diagram for each class in the AST.
 
@@ -15,14 +14,29 @@ def create_nodes(ast_tree: ast.AST, dot: Digraph) -> None:
     :type ast_tree: AST
     :param dot: The Graphviz Digraph object
     :type dot: Digraph
+    :return: Set of node names created
+    :rtype: set[str]
     """
+    node_set = set()
     for node in ast.walk(ast_tree):
 
         if isinstance(node, ast.ClassDef):
-            method_string_list = _get_methods(node)
             attribute_string_list = _get_attributes(node)
+            method_string_list = _get_methods(node)
 
-            dot.node(node.name, shape="record", label=f"{{{node.name}|{"\\l".join(attribute_string_list)}\\l|{"\\l".join(method_string_list)}\\l}}")
+            html_attributes = "".join([f'{attribute}<BR ALIGN="LEFT"/>' for attribute in attribute_string_list])
+            html_methods = "".join([f'{method}<BR ALIGN="LEFT"/>' for method in method_string_list])
+
+            html_string = f"""<<TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="6">
+            <TR><TD>{node.name}</TD></TR>
+            <TR><TD ALIGN="LEFT">{html_attributes}</TD></TR>
+            <TR><TD ALIGN="LEFT">{html_methods}</TD></TR>
+            </TABLE>>"""
+
+            dot.node(node.name, shape="plaintext", label=html_string, margin="0")
+            node_set.add(node.name)
+
+    return node_set
 
 
 def _get_methods(node: ast.ClassDef) -> list[str]:
@@ -46,14 +60,15 @@ def _get_methods(node: ast.ClassDef) -> list[str]:
             else:
                 method_string = f"+ {method.name}("
 
+        method_parameters = []
         for arg in method.args.args:
             if arg.arg != "self":
                 type_name = ""
                 if arg.annotation:
                     if isinstance(arg.annotation, ast.Name):
                         type_name = f": {arg.annotation.id}"
-                method_string += f"{arg.arg}{type_name}"
-        method_string += ")"
+                method_parameters.append(f"{arg.arg}{type_name}")
+        method_string += ", ".join(method_parameters) + ")"
 
         if method.returns:
             if isinstance(method.returns, ast.Name):
@@ -100,30 +115,3 @@ def _get_attributes(node: ast.ClassDef) -> list[str]:
                             attribute_string_list.append(attribute_string)
 
     return attribute_string_list
-
-
-def parse_ast(ast_tree: ast.AST, filename: str) -> None:
-    """
-    Parses the AST and generates a UML diagram.
-
-    :param ast_tree: The abstract syntax tree to parse
-    :type ast_tree: AST
-    """
-    dot = Digraph(comment="UML Diagram")
-    create_nodes(ast_tree, dot)
-    # link_nodes(ast_tree, dot)
-    dot.render(f"output/{filename}", format="svg")
-
-
-def main(filepath: str):
-    """
-    Test the parse_ast function on a sample AST.
-    """
-    tree = abstract_code(filepath)
-    filename = filepath.split("/")[-1].split(".")[0]
-    parse_ast(tree, filename)
-
-
-if __name__ == "__main__":
-    main("src/test/example1.py")
-    main("src/test/example2.py")
