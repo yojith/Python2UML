@@ -17,7 +17,8 @@ def parse_ast(ast_tree: ast.AST, filename: str) -> None:
     :param ast_tree: The abstract syntax tree to parse
     :type ast_tree: AST
     """
-    dot = Digraph(comment="UML Diagram", graph_attr={"splines": "ortho"})
+    dot = Digraph(comment="UML Diagram", graph_attr={"splines": "ortho", "nodesep": "1.0", "ranksep": "1.2"})
+
     nodes = create_nodes(ast_tree, dot)
     link_nodes(ast_tree, dot, nodes)
     print(dot.directory)

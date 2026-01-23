@@ -24,21 +24,33 @@ def link_nodes(ast_tree: ast.AST, dot: Digraph, node_set: set[str]) -> None:
                 if isinstance(parent, ast.Name):
                     if parent.id in node_set:
                         print(f"{node.name} inherits from {parent.id}")
-                        dot.edge(node.name, parent.id, arrowhead="empty", tailport="s", headport="n", xlabel="inherits")
+                        dot.edge(parent.id, node.name, arrowhead="onormal", headport="n", tailport="s")
 
             # Check associations via attributes
             for f in node.body:
                 if isinstance(f, ast.FunctionDef):
+                    # Check for parameters in each function for aggregation
+                    for arg in f.args.args:
+                        if arg.arg != "self":
+                            if arg.annotation and isinstance(arg.annotation, ast.Name):
+                                print(f"{node.name} has an association with {arg.annotation.id}")
+                                if arg.annotation.id in node_set:
+                                    dot.edge(node.name, arg.annotation.id, arrowhead="normal", headport="n", tailport="s")
+
                     for n in f.body:
+
+                        # Check for annotated assignment
                         if isinstance(n, ast.AnnAssign):
                             if isinstance(n.annotation, ast.Name):
                                 print(f"{node.name} has an association with {n.annotation.id}")
                                 if n.annotation.id in node_set:
-                                    dot.edge(node.name, n.annotation.id, arrowhead="vee", headport="e", tailport="w", label="has a")
+                                    dot.edge(node.name, n.annotation.id, arrowhead="normal", headport="s", tailport="n")
+
+                        # Check for instantiation in assignment value (composition)
                         elif isinstance(n, ast.Assign):
-                            for target in n.targets:
-                                if isinstance(target, ast.Attribute):
-                                    if isinstance(n.value, ast.Name):
-                                        print(f"{node.name} has an association with {n.value.id}")
-                                        if n.value.id in node_set:
-                                            dot.edge(node.name, n.value.id, arrowhead="vee", headport="e", tailport="w", label="has a")
+                            # Check for instantiation in assignment value
+                            if isinstance(n.value, ast.Call):
+                                if isinstance(n.value.func, ast.Name):
+                                    print(f"{node.name} has an association with {n.value.func.id}")
+                                    if n.value.func.id in node_set:
+                                        dot.edge(node.name, n.value.func.id, arrowhead="normal", headport="s", tailport="n")
