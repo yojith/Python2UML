@@ -14,8 +14,8 @@
   "contributes": {
     "commands": [
       {
-        "command": "python2uml.helloWorld",
-        "title": "Hello World"
+        "command": "python2uml.generateUML",
+        "title": "Generate UML Diagram from Python Files"
       }
     ]
   },
