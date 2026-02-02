@@ -1,7 +1,7 @@
 // The module 'vscode' contains the VS Code extensibility API
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from "vscode";
-import { pickFiles } from "./file_picker";
+import { uploadFiles, saveFile } from "./file_picker";
 import { runScript } from "./python_runner";
 import { setupVenv } from "./python_runner";
 
@@ -18,32 +18,40 @@ export function activate(context: vscode.ExtensionContext) {
   const disposable = vscode.commands.registerCommand(
     "python2uml.generateUML",
     async () => {
-      const venvPython = await setupVenv(context.extensionUri);
-      vscode.window.showInformationMessage("Launching UML generator...");
-      pickFiles().then((filePaths) => {
-        if (filePaths && filePaths.length > 0) {
-          const args = ["-o", "uml_diagram", "-p", ...filePaths];
+      try {
+        const venvPython = await setupVenv(context.extensionUri);
+        vscode.window.showInformationMessage("Launching UML generator...");
+
+        const filePaths = await uploadFiles();
+        const outputPath = await saveFile();
+
+        if (!filePaths || filePaths.length === 0 || !outputPath) {
+          vscode.window.showWarningMessage("No files were selected.");
+        } else {
+          const args = ["-o", outputPath, "-p", ...filePaths];
           const pythonDir = vscode.Uri.joinPath(
             context.extensionUri,
             "src",
             "python",
           );
 
-          runScript(venvPython, pythonDir, args)
-            .then((output) => {
-			  console.log(output);
-              vscode.window.showInformationMessage(
-                "UML diagram generated successfully!",
-              );
-            })
-            .catch((error) => {
-              vscode.window.showErrorMessage(`Error: ${error.message}`);
-            });
-
-        } else {
-          vscode.window.showWarningMessage("No files were selected.");
+          try {
+            const output = await runScript(venvPython, pythonDir, args);
+            console.log(output);
+            vscode.window.showInformationMessage(
+              "UML diagram generated successfully!",
+            );
+          } catch (error) {
+            vscode.window.showErrorMessage(
+              `Error: ${error instanceof Error ? error.message : String(error)}`,
+            );
+          }
         }
-      });
+      } catch (error) {
+        vscode.window.showErrorMessage(
+          `Error: ${error instanceof Error ? error.message : String(error)}`,
+        );
+      }
     },
   );
 

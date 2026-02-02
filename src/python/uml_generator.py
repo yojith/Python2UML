@@ -5,6 +5,8 @@ Generate a UML diagram from an abstract syntax tree (AST) of Python code.
 import ast
 from graphviz import Digraph
 from pathlib import Path
+from tkinter import filedialog
+from tkinter import Tk
 
 from node_generator import create_nodes
 from node_linker import link_nodes
@@ -38,15 +40,25 @@ def parse_ast(ast_tree_list: list[ast.AST], dot: Digraph) -> None:
     print(dot.directory)
 
 
-def save_uml(dot: Digraph, output_file: str) -> None:
+def save_uml(dot: Digraph, output_path: str, file_extenstion: str = "svg") -> None:
     """
     Saves the UML diagram to a file.
     :param dot: The Graphviz Digraph object
     :type dot: Digraph
     :param output_file: The output file name (without extension)
     :type output_file: str
+    :param file_extenstion: The file extension/format (default: "svg")
+    :type file_extenstion: str
     """
-    dot.render(f"output/{output_file}", format="svg")
+
+    if file_extenstion not in ["svg", "png", "pdf", "jpg", "jpeg"]:
+        raise ValueError(f"Unsupported file extension: {file_extenstion}")
+
+    if Path(output_path).suffix:
+        file_extenstion = Path(output_path).suffix[1:]
+        output_path = str(Path(output_path).with_suffix(""))
+
+    dot.render(output_path, format=file_extenstion, cleanup=True)
 
 
 def generate_uml_from_files(output: str, *paths: str) -> None:
@@ -77,10 +89,10 @@ def main():
     """
     Test the parse_ast function on a sample AST.
     """
-    generate_uml_from_files("example1", "src/test/example1.py")
-    generate_uml_from_files("example2", "src/test/example2.py")
-    generate_uml_from_files("example3", "src/test/example3.py")
-    generate_uml_from_files("example4", "src/test/example4")
+    generate_uml_from_files("output/example1", "src/test/example1.py")
+    generate_uml_from_files("output/example2", "src/test/example2.py")
+    generate_uml_from_files("output/example3", "src/test/example3.py")
+    generate_uml_from_files("output/example4", "src/test/example4")
 
 
 if __name__ == "__main__":
