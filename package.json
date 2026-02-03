@@ -9,7 +9,7 @@
     "url": "https://github.com/yojith/python2uml"
   },
   "engines": {
-    "vscode": "^1.108.1"
+    "vscode": "^1.50.0"
   },
   "categories": [
     "Other"
