@@ -3,6 +3,11 @@
   "displayName": "Python2UML",
   "description": "",
   "version": "0.0.1",
+  "publisher": "yojith",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yojith/python2uml"
+  },
   "engines": {
     "vscode": "^1.108.1"
   },
