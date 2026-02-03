@@ -25,6 +25,7 @@ export async function generateUML(
     const args = ["-o", outputPath, "-p", ...paths];
     const pythonDir = vscode.Uri.joinPath(
       context.extensionUri,
+      "dist",
       "src",
       "python",
     );

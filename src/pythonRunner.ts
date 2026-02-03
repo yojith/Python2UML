@@ -20,7 +20,7 @@ export async function setupVenv(extensionUri: Uri): Promise<string> {
   console.log(`Creating virtual environment at ${venvPath}`);
   await execFileAsync("python", ["-m", "venv", venvPath]);
 
-  const reqPath = Uri.joinPath(extensionUri, "src", "requirements.txt").fsPath;
+  const reqPath = Uri.joinPath(extensionUri, "dist", "src", "requirements.txt").fsPath;
   if (fs.existsSync(reqPath)) {
     console.log("Installing dependencies...");
     await execFileAsync(pythonExe, ["-m", "pip", "install", "-r", reqPath]);

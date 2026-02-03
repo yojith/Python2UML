@@ -1,6 +1,7 @@
 .vscode/**
 .vscode-test/**
 src/**
+!src/python/**
 .gitignore
 vsc-extension-quickstart.md
 **/tsconfig.json
@@ -10,6 +11,7 @@ vsc-extension-quickstart.md
 **/.vscode-test.*
 .venv/**
 **/output/**
+**/out/**
 **/.env
 .github/**
 .git/**
