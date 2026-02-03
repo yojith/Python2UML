@@ -1,6 +1,7 @@
 # python2uml
 
 Convert Python source code into UML class diagrams directly in VS Code.
+Note: Graphviz must be installed.
 
 ## Features
 
@@ -31,6 +32,13 @@ Convert Python source code into UML class diagrams directly in VS Code.
 
 - Python 3.x
 - Graphviz
+
+### Install Graphviz
+
+1. Download the installer from the official site: https://graphviz.org/download/
+2. Run the installer
+3. Check "Add Graphviz to PATH" during install (critical)
+4. Restart your terminal / VS Code
 
 ## License
 
