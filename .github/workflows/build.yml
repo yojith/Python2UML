@@ -23,4 +23,4 @@ jobs:
         run: npm run compile
 
       - name: Publish to VS Code Marketplace
-        run: npx vsce publish --pat ${{ secrets.VSCE_PAT }}
+        run: npx vsce publish patch --pat ${{ secrets.VSCE_PAT }}
