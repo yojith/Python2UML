@@ -11,9 +11,19 @@ Convert Python source code into UML class diagrams directly in VS Code.
 
 ## Usage
 
+### Generate UML from Files
+
 1. Open the command palette (`Ctrl+Shift+P`)
-2. Run `python2uml: Generate UML`
-3. Select Python file(s) or folder(s)
+2. Run `python2uml: Generate UML Diagram from Python Files`
+3. Select Python file(s)
+4. Choose save location and format
+5. View your UML diagram
+
+### Generate UML from Folders
+
+1. Open the command palette (`Ctrl+Shift+P`)
+2. Run `python2uml: Generate UML Diagram from Python Folders`
+3. Select folder(s) containing Python files
 4. Choose save location and format
 5. View your UML diagram
 

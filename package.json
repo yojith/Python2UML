@@ -19,8 +19,12 @@
   "contributes": {
     "commands": [
       {
-        "command": "python2uml.generateUML",
+        "command": "python2uml.generateUMLFromFiles",
         "title": "Generate UML Diagram from Python Files"
+      },
+      {
+        "command": "python2uml.generateUMLFromFolders",
+        "title": "Generate UML Diagram from Python Folders"
       }
     ]
   },

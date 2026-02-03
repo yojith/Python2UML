@@ -3,7 +3,23 @@ import { window } from "vscode";
 export function uploadFiles(): Thenable<string[] | undefined> {
   const files = window.showOpenDialog({
     title: "Upload Python files",
+    canSelectMany: true,
     filters: { "Python Files": ["py"] },
+  });
+  return files.then((uris) => {
+    if (uris) {
+      return uris.map((uri) => uri.fsPath);
+    } else {
+      return undefined;
+    }
+  });
+}
+
+export function uploadFolders(): Thenable<string[] | undefined> {
+  const files = window.showOpenDialog({
+    title: "Upload Python folders",
+    canSelectMany: true,
+    canSelectFolders: true,
   });
   return files.then((uris) => {
     if (uris) {
