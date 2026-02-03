@@ -7,7 +7,7 @@ import * as path from "path";
 const execFileAsync = promisify(execFile);
 
 export async function setupVenv(extensionUri: Uri): Promise<string> {
-  const venvPath = Uri.joinPath(extensionUri, "dist", "venv").fsPath;
+  const venvPath = Uri.joinPath(extensionUri, "venv").fsPath;
   const pythonExe =
     process.platform === "win32"
       ? path.join(venvPath, "Scripts", "python.exe")
@@ -20,7 +20,7 @@ export async function setupVenv(extensionUri: Uri): Promise<string> {
   console.log(`Creating virtual environment at ${venvPath}`);
   await execFileAsync("python", ["-m", "venv", venvPath]);
 
-  const reqPath = Uri.joinPath(extensionUri, "dist", "src", "requirements.txt").fsPath;
+  const reqPath = Uri.joinPath(extensionUri, "src", "requirements.txt").fsPath;
   if (fs.existsSync(reqPath)) {
     console.log("Installing dependencies...");
     await execFileAsync(pythonExe, ["-m", "pip", "install", "-r", reqPath]);
